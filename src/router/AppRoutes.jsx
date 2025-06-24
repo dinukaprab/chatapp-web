@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import BaseLayout from "/src/components/Layouts/BaseLayout";
 import Home from "/src/pages/Home/Home";
-import Login from "/src/auth/Login";
+import Login from "/src/auth/Auth";
 import ChatWindow from "/src/pages/ChatWindow/ChatWindow";
 
 export default function AppRoutes() {
