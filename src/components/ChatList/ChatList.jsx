@@ -200,6 +200,7 @@ export default function ChatList() {
           marginTop: 2,
           height: "calc(100vh - 160px)",
           overflowY: "auto",
+           overflowX: "hidden",
           scrollbarWidth: "thin",
           "&::-webkit-scrollbar": {
             width: "4px",
