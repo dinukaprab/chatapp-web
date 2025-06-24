@@ -18,6 +18,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomTextField from "/src/components/TextFields/CustomTextField";
 
 export default function Login() {
+  document.title = "Login | ChatApp";
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [identifierError, setIdentifierError] = useState("");
