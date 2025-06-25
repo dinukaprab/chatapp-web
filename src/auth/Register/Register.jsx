@@ -233,6 +233,9 @@ export default function Register({ onSwitch, withAnimation }) {
                 minWidth: "110px",
                 gap: 1,
                 cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#F0F0F0",
+                },
               }}
             >
               <CircularProgress
@@ -272,6 +275,9 @@ export default function Register({ onSwitch, withAnimation }) {
                 padding: "5px 20px",
                 gap: 1,
                 cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#F0F0F0",
+                },
               }}
             >
               <CircularProgress

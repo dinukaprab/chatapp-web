@@ -18,7 +18,12 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomTextField from "/src/components/TextFields/CustomTextField";
 
-export default function Login({ onSwitch, withAnimation, onOtpSent }) {
+export default function Login({
+  onSwitch,
+  withAnimation,
+  onOtpSent,
+  onForgotPassword,
+}) {
   document.title = "Login | ChatApp";
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -155,6 +160,9 @@ export default function Login({ onSwitch, withAnimation, onOtpSent }) {
                 minWidth: "110px",
                 gap: 1,
                 cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#F0F0F0",
+                },
               }}
             >
               <CircularProgress
@@ -194,6 +202,9 @@ export default function Login({ onSwitch, withAnimation, onOtpSent }) {
                 padding: "5px 20px",
                 gap: 1,
                 cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#F0F0F0",
+                },
               }}
             >
               <CircularProgress
@@ -315,13 +326,24 @@ export default function Login({ onSwitch, withAnimation, onOtpSent }) {
                     color: "#212121",
                     cursor: "pointer",
                     fontWeight: 500,
-                    "&:hover": {
-                      textDecoration: "underline",
+                    fontFamily: "Roboto, sans-serif",
+                    fontVariationSettings: "'wdth' 100",
+                    position: "relative",
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      width: 0,
+                      height: "1px",
+                      bottom: 4,
+                      left: 0,
+                      backgroundColor: "#212121",
+                      transition: "width 0.3s ease",
+                    },
+                    "&:hover::after": {
+                      width: "100%",
                     },
                   }}
-                  onClick={() =>
-                    console.log("Navigate to forgot password page")
-                  }
+                  onClick={onForgotPassword}
                 >
                   Forgot password?
                 </Typography>
@@ -345,7 +367,7 @@ export default function Login({ onSwitch, withAnimation, onOtpSent }) {
                 sx={{
                   position: "absolute",
                   right: 10,
-                  top: 35,
+                  top: 30,
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",

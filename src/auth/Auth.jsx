@@ -3,11 +3,13 @@ import { Box } from "@mui/material";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 import Verification from "./Verification/Verification";
+import ForgotPassword from "./ForgotPassword/ForgotPassword";
 
 export default function Auth() {
   const [showLogin, setShowLogin] = useState(true);
-  const [showVerification, setShowVerification] = useState(false);
   const [emailAddress, setEmailAddress] = useState("");
+  const [showVerification, setShowVerification] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [withAnimation, setWithAnimation] = useState(false);
 
@@ -21,6 +23,10 @@ export default function Auth() {
     setShowLogin(toLogin);
     localStorage.setItem("authPage", toLogin ? "login" : "register");
     setWithAnimation(true);
+  };
+
+  const handleForgotPassword = () => {
+    setShowForgotPassword(true);
   };
 
   if (!mounted) return null;
@@ -52,6 +58,15 @@ export default function Auth() {
             emailAddress={emailAddress}
             withAnimation={withAnimation}
           />
+        ) : showForgotPassword ? (
+          <ForgotPassword
+            onSwitchToLogin={() => {
+              setShowForgotPassword(false);
+              setShowLogin(true);
+              setWithAnimation(true);
+            }}
+            withAnimation={true}
+          />
         ) : showLogin ? (
           <Login
             onSwitch={() => handleSwitch(false)}
@@ -59,6 +74,7 @@ export default function Auth() {
               setEmailAddress(email);
               setShowVerification(true);
             }}
+            onForgotPassword={handleForgotPassword}
             withAnimation={withAnimation}
           />
         ) : (
