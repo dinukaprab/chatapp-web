@@ -18,7 +18,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomTextField from "/src/components/TextFields/CustomTextField";
 
-export default function Register({ onSwitch, withAnimation }) {
+export default function Register({ onSwitch, withAnimation, accountCreated }) {
   document.title = "Register | ChatApp";
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -134,7 +134,7 @@ export default function Register({ onSwitch, withAnimation }) {
         lastName,
       });
       if (response.data.success) {
-        // Redirect to Account Confirmation page
+        accountCreated(true);
       } else {
         setError(response.data.message || "Registration failed.");
       }

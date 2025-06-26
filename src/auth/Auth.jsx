@@ -4,12 +4,14 @@ import Login from "./Login/Login";
 import Register from "./Register/Register";
 import Verification from "./Verification/Verification";
 import ForgotPassword from "./ForgotPassword/ForgotPassword";
+import Username from "./Username/Username";
 
-export default function Auth() {
+export default function Auth({ onUsernameCreated }) {
   const [showLogin, setShowLogin] = useState(true);
   const [emailAddress, setEmailAddress] = useState("");
   const [showVerification, setShowVerification] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showUsername, setShowUsername] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [withAnimation, setWithAnimation] = useState(false);
 
@@ -58,6 +60,8 @@ export default function Auth() {
             emailAddress={emailAddress}
             withAnimation={withAnimation}
           />
+        ) : showUsername || !onUsernameCreated ? (
+          <Username withAnimation={true} />
         ) : showForgotPassword ? (
           <ForgotPassword
             onSwitchToLogin={() => {
@@ -81,6 +85,7 @@ export default function Auth() {
           <Register
             onSwitch={() => handleSwitch(true)}
             withAnimation={withAnimation}
+            accountCreated={setShowUsername}
           />
         )}
       </Box>
