@@ -17,6 +17,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import UndoIcon from "@mui/icons-material/Undo";
 import CustomTextField from "/src/components/TextFields/CustomTextField";
+import { useSnackbar } from "/src/contexts/SnackbarContext/SnackbarContext";
 
 const waveIn = keyframes`
   0% {
@@ -64,6 +65,7 @@ const WaveText = ({ text }) => {
 export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
   document.title = "Forgot Password | ChatApp";
   const inputRefs = useRef([]);
+  const { showSnackbar } = useSnackbar();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -125,7 +127,7 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
         password,
       });
       if (response.data.success) {
-        setError("A reset code has been sent to your email address.");
+        showSnackbar("A reset code has been sent to your email address.", "success");
         setIdentifier("");
         setPassword("");
         setConfirmPassword("");
@@ -138,7 +140,7 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
       }
     } catch (err) {
       console.error(err);
-      setError("Failed to send reset code. Please try again later.");
+      showSnackbar("Failed to send reset code. Please try again later.", "error");
     } finally {
       setSendCodeLoading(false);
     }
@@ -208,7 +210,7 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
         setError(response.data.message || "Invalid OTP.");
       }
     } catch (error) {
-      setError("Verification failed. Try again later.");
+      showSnackbar("Verification failed. Try again later.", "error");
     } finally {
       setLoading(false);
     }
@@ -227,14 +229,14 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
       });
 
       if (response.data.success) {
-        setError("OTP resent successfully");
+        showSnackbar("OTP resent successfully", "success");
         inputRefs.current[0]?.focus();
       } else {
-        setError("Failed to resend OTP. Please try again.");
+        showSnackbar("Failed to resend OTP. Please try again.", "error");
       }
     } catch (err) {
       console.error("Resend OTP error:", err);
-      setError("Something went wrong. Please try again later.");
+      showSnackbar("Something went wrong. Please try again later.", "error");
     } finally {
       setResendLoading(false);
     }
@@ -271,7 +273,7 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
         password,
       });
       if (response.data.success) {
-        setError("Password created successfully. You can now log in.");
+        showSnackbar("Password created successfully. You can now log in.", "success");
         setCodeSent(false);
         setCodeVerified(false);
         setIdentifier("");
@@ -279,13 +281,13 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
         setConfirmPassword("");
         setCode(Array(5).fill(""));
       } else {
-        setError(
-          response.data.message || "An error occurred. Please try again."
+        showSnackbar(
+          response.data.message || "An error occurred. Please try again.", "error"
         );
       }
     } catch (err) {
       console.error(err);
-      setError("Failed to create password. Please try again later.");
+      showSnackbar("Failed to create password. Please try again later.", "error");
     } finally {
       setVerifyLoading(false);
     }
@@ -613,8 +615,8 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
                   !codeSent
                     ? handleSendCode
                     : !codeVerified
-                    ? handleVerify
-                    : handleCreatePassword
+                      ? handleVerify
+                      : handleCreatePassword
                 }
                 sx={{
                   mt: 2,

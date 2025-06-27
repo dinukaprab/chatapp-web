@@ -13,10 +13,12 @@ import {
   LinearProgress,
 } from "@mui/material";
 import CustomTextField from "/src/components/TextFields/CustomTextField";
+import { useSnackbar } from "/src/contexts/SnackbarContext/SnackbarContext";
 
 export default function Verification({ emailAddress, withAnimation }) {
   document.title = "OTP Verification | ChatApp";
   const inputRefs = useRef([]);
+  const { showSnackbar } = useSnackbar();
   const [error, setError] = useState({ message: "", variant: "" });
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
@@ -81,7 +83,7 @@ export default function Verification({ emailAddress, withAnimation }) {
       });
 
       if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
+        // localStorage.setItem("token", response.data.token);
       } else {
         setError({
           message: response.data.message || "Invalid OTP.",
@@ -89,10 +91,7 @@ export default function Verification({ emailAddress, withAnimation }) {
         });
       }
     } catch (error) {
-      setError({
-        message: "Verification failed. Try again later.",
-        variant: "error",
-      });
+      showSnackbar("Verification failed. Try again later.", "error");
     } finally {
       setLoading(false);
     }
@@ -111,20 +110,14 @@ export default function Verification({ emailAddress, withAnimation }) {
       });
 
       if (response.data.success) {
-        setError({ message: "OTP resent successfully", variant: "success" });
+        showSnackbar("OTP resent successfully", "success");
         inputRefs.current[0]?.focus();
       } else {
-        setError({
-          message: "Failed to resend OTP. Please try again.",
-          variant: "error",
-        });
+        showSnackbar("Failed to resend OTP. Please try again.", "error");
       }
     } catch (err) {
       console.error("Resend OTP error:", err);
-      setError({
-        message: "Something went wrong. Please try again later.",
-        variant: "error",
-      });
+      showSnackbar("Something went wrong. Please try again later.", "error");
     } finally {
       setResendLoading(false);
     }
