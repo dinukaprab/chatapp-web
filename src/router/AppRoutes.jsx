@@ -3,6 +3,7 @@ import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import AppProtectedRoute from "/src/contexts/AuthContext/AppProtectedRoute";
 import AppPublicRoute from "/src/contexts/AuthContext/AppPublicRoute";
+import WelcomeLoader from "/src/components/Loaders/WelcomeLoader";
 import BaseLayout from "/src/components/Layouts/BaseLayout";
 import Home from "/src/pages/Home/Home";
 import Auth from "/src/auth/Auth";
@@ -36,7 +37,7 @@ export default function AppRoutes() {
   }, []);
 
   if (loading) {
-    return (<div>Loading...</div>)
+    return <WelcomeLoader />
   }
 
   return (
