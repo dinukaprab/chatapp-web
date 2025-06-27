@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
+import { AuthProvider } from "/src/contexts/AuthContext/AuthContext";
 import AppRoutes from "/src/router/AppRoutes";
 import theme from "/src/theme/theme";
 
@@ -15,10 +16,12 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <CssBaseline />
-        <AppRoutes />
-      </Router>
+      <AuthProvider>
+        <Router>
+          <CssBaseline />
+          <AppRoutes />
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

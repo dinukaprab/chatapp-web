@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
+import AppProtectedRoute from "/src/contexts/AuthContext/AppProtectedRoute";
+import AppPublicRoute from "/src/contexts/AuthContext/AppPublicRoute";
 import BaseLayout from "/src/components/Layouts/BaseLayout";
 import Home from "/src/pages/Home/Home";
 import Auth from "/src/auth/Auth";
@@ -43,18 +45,26 @@ export default function AppRoutes() {
         path="/"
         element={
           isLoggedIn ? (
-            <BaseLayout Content={<Home />} />
+            <AppProtectedRoute>
+              <BaseLayout Content={<Home />} />
+            </AppProtectedRoute>
           ) : (
-            <Auth
-              onLogin={() => setIsLoggedIn(true)}
-              onUsernameCreated={usernameCreated}
-            />
+            <AppPublicRoute>
+              <Auth
+                onLogin={() => setIsLoggedIn(true)}
+                onUsernameCreated={usernameCreated}
+              />
+            </AppPublicRoute>
           )
         }
       />
       <Route
         path="/:username"
-        element={<BaseLayout Content={<ChatWindow />} />}
+        element={
+          <AppProtectedRoute>
+            <BaseLayout Content={<ChatWindow />} />
+          </AppProtectedRoute>
+        }
       />
     </Routes>
   );
