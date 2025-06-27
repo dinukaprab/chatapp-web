@@ -5,6 +5,7 @@ import { AuthProvider } from "/src/contexts/AuthContext/AuthContext";
 import { SnackbarProvider } from "/src/contexts/SnackbarContext/SnackbarContext";
 import AppRoutes from "/src/router/AppRoutes";
 import theme from "/src/theme/theme";
+import "./App.css"
 
 export default function App() {
   useEffect(() => {

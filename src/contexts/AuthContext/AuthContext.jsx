@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { createContext, useContext, useState, useEffect } from "react";
+import WelcomeLoader from "/src/components/Loaders/WelcomeLoader";
 
 const AuthContext = createContext();
 
@@ -87,13 +88,12 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={{
                 isAuthenticated,
-                loading,
                 user,
                 login,
                 logout,
             }}
         >
-            {children}
+            {loading ? <WelcomeLoader /> : children}
         </AuthContext.Provider>
     );
 };
