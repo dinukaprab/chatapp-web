@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         try {
-            const res = await axios.get("/api/user/check-auth", {
+            const res = await axios.get("/api/auth/v1/check-auth", {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
         try {
             if (token) {
                 await axios.post(
-                    "/api/user/logout",
+                    "/api/auth/v1/logout",
                     {},
                     {
                         headers: { Authorization: `Bearer ${token}` },

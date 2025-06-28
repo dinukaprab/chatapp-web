@@ -30,7 +30,7 @@ export default function Username({ onUsernameSelected, withAnimation }) {
 
     try {
       const response = await axios.get(
-        `/api/auth/check-username?username=${encodeURIComponent(value)}`
+        `/api/auth/v1/check-username?username=${encodeURIComponent(value)}`
       );
       if (response.data.available) {
         setAvailable(true);
@@ -107,7 +107,7 @@ export default function Username({ onUsernameSelected, withAnimation }) {
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/auth/create-username", {
+      const response = await axios.post("/api/auth/v1/create-username", {
         username,
       });
       if (response.data.success) onUsernameSelected(username);

@@ -1,9 +1,10 @@
 import ProtectedRoute from "./ProtectedRoute";
+import { Navigate } from "react-router-dom";
 
 const AppProtectedRoute = ({ children }) => {
     const onUnauthenticated = () => {
         localStorage.removeItem("token");
-        window.location.reload();
+        return <Navigate to="/" replace />;
     };
 
     return (

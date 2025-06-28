@@ -11,6 +11,8 @@ import {
   Typography,
   CircularProgress,
   FormHelperText,
+  Stack,
+  LinearProgress,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import DiscordIcon from "/src/assets/icons/DiscordIcon";
@@ -127,7 +129,7 @@ export default function Register({ onSwitch, withAnimation, accountCreated }) {
     }
 
     try {
-      const response = await axios.post("/api/auth/register", {
+      const response = await axios.post("/api/auth/v1/register", {
         email: emailAddress,
         password,
         firstName,
@@ -169,6 +171,7 @@ export default function Register({ onSwitch, withAnimation, accountCreated }) {
       >
         <Box
           sx={{
+            position: "relative",
             width: "100%",
             display: "flex",
             flexDirection: "column",
@@ -182,6 +185,19 @@ export default function Register({ onSwitch, withAnimation, accountCreated }) {
             backgroundColor: "#FFFFFF",
           }}
         >
+          {loading && (
+            <Stack
+              sx={{
+                position: "absolute",
+                top: 0,
+                width: "100%",
+                color: "grey.500",
+              }}
+              spacing={2}
+            >
+              <LinearProgress color="inherit" />
+            </Stack>
+          )}
           <Typography
             variant="body2"
             gutterBottom

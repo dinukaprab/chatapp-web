@@ -14,10 +14,12 @@ import {
 } from "@mui/material";
 import CustomTextField from "/src/components/TextFields/CustomTextField";
 import { useSnackbar } from "/src/contexts/SnackbarContext/SnackbarContext";
+import { useAuth } from "/src/contexts/AuthContext/AuthContext";
 
 export default function Verification({ emailAddress, withAnimation }) {
   document.title = "OTP Verification | ChatApp";
   const inputRefs = useRef([]);
+  const { login } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [error, setError] = useState({ message: "", variant: "" });
   const [loading, setLoading] = useState(false);
@@ -77,13 +79,13 @@ export default function Verification({ emailAddress, withAnimation }) {
     setError({ message: "", variant: "" });
 
     try {
-      const response = await axios.post("/api/auth/verify-otp", {
+      const response = await axios.post("/api/auth/v1/verify-login-otp", {
         email: emailAddress,
         otp: otp.join(""),
       });
 
       if (response.data.success) {
-        // localStorage.setItem("token", response.data.token);
+        login(response.data.token);
       } else {
         setError({
           message: response.data.message || "Invalid OTP.",
@@ -91,7 +93,14 @@ export default function Verification({ emailAddress, withAnimation }) {
         });
       }
     } catch (error) {
-      showSnackbar("Verification failed. Try again later.", "error");
+      const msg =
+        error.response?.data?.message || "Verification failed. Try again later.";
+      setError({
+        message: msg,
+        variant: "error",
+      });
+
+
     } finally {
       setLoading(false);
     }
@@ -105,7 +114,7 @@ export default function Verification({ emailAddress, withAnimation }) {
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     try {
-      const response = await axios.post("/api/auth/send-otp", {
+      const response = await axios.post("/api/auth/v1/send-login-otp", {
         email: emailAddress,
       });
 

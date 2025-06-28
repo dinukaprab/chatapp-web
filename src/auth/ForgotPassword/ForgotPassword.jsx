@@ -9,7 +9,9 @@ import {
   Button,
   IconButton,
   Typography,
+  Stack,
   CircularProgress,
+  LinearProgress,
   FormHelperText,
 } from "@mui/material";
 import { keyframes } from "@mui/system";
@@ -95,40 +97,14 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
       setSendCodeLoading(false);
       return;
     }
-    if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(identifier)) {
-      setIdentifierError("Invalid email address format.");
-      setSendCodeLoading(false);
-      return;
-    }
-    if (!password) {
-      setPasswordError("Password is required.");
-      setSendCodeLoading(false);
-      return;
-    }
-    if (password.length < 8) {
-      setPasswordError("Password must be at least 8 characters long.");
-      setSendCodeLoading(false);
-      return;
-    }
-    if (!confirmPassword) {
-      setConfirmPasswordError("Please confirm your password.");
-      setSendCodeLoading(false);
-      return;
-    }
-    if (confirmPassword !== password) {
-      setConfirmPasswordError("Passwords do not match.");
-      setSendCodeLoading(false);
-      return;
-    }
 
     try {
-      const response = await axios.post("/api/auth/forgot-password", {
+      const response = await axios.post("/api/auth/v1/forgot-password", {
         identifier,
-        password,
       });
+
       if (response.data.success) {
         showSnackbar("A reset code has been sent to your email address.", "success");
-        setIdentifier("");
         setPassword("");
         setConfirmPassword("");
         setCodeSent(true);
@@ -140,8 +116,10 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
       }
     } catch (err) {
       console.error(err);
-      showSnackbar("Failed to send reset code. Please try again later.", "error");
-    } finally {
+      const message = err.response?.data?.message || "Failed to send reset code. Please try again later.";
+      setError(message);
+    }
+    finally {
       setSendCodeLoading(false);
     }
   };
@@ -199,8 +177,8 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
     setError("");
 
     try {
-      const response = await axios.post("/api/auth/verify-otp", {
-        email: emailAddress,
+      const response = await axios.post("/api/auth/v1/verify-forgot-password-otp", {
+        identifier,
         otp: code.join(""),
       });
 
@@ -209,8 +187,10 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
       } else {
         setError(response.data.message || "Invalid OTP.");
       }
-    } catch (error) {
-      showSnackbar("Verification failed. Try again later.", "error");
+    } catch (err) {
+      console.error(err);
+      const message = err.response?.data?.message || "Verification failed. Try again later.";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -224,8 +204,8 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     try {
-      const response = await axios.post("/api/auth/send-otp", {
-        email: emailAddress,
+      const response = await axios.post("/api/auth/v1/forgot-password", {
+        identifier,
       });
 
       if (response.data.success) {
@@ -235,8 +215,9 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
         showSnackbar("Failed to resend OTP. Please try again.", "error");
       }
     } catch (err) {
-      console.error("Resend OTP error:", err);
-      showSnackbar("Something went wrong. Please try again later.", "error");
+      console.error(err);
+      const message = err.response?.data?.message || "Something went wrong. Please try again later.";
+      setError(message);
     } finally {
       setResendLoading(false);
     }
@@ -247,47 +228,54 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
     setError("");
     setPasswordError("");
     setConfirmPasswordError("");
+
     if (!password) {
       setPasswordError("New password is required.");
       setVerifyLoading(false);
       return;
     }
+
     if (password.length < 8) {
       setPasswordError("Password must be at least 8 characters long.");
       setVerifyLoading(false);
       return;
     }
+
     if (!confirmPassword) {
       setConfirmPasswordError("Please confirm your new password.");
       setVerifyLoading(false);
       return;
     }
+
     if (confirmPassword !== password) {
       setConfirmPasswordError("Passwords do not match.");
       setVerifyLoading(false);
       return;
     }
+
     try {
-      const response = await axios.post("/api/auth/create-password", {
-        email: identifier,
+      const response = await axios.post("/api/auth/v1/create-new-password", {
+        identifier,
         password,
       });
       if (response.data.success) {
         showSnackbar("Password created successfully. You can now log in.", "success");
         setCodeSent(false);
         setCodeVerified(false);
-        setIdentifier("");
         setPassword("");
         setConfirmPassword("");
         setCode(Array(5).fill(""));
+        onSwitchToLogin();
       } else {
         showSnackbar(
           response.data.message || "An error occurred. Please try again.", "error"
         );
       }
-    } catch (err) {
+    }
+    catch (err) {
       console.error(err);
-      showSnackbar("Failed to create password. Please try again later.", "error");
+      const message = err.response?.data?.message || "Failed to create password. Please try again later.";
+      setError(message);
     } finally {
       setVerifyLoading(false);
     }
@@ -330,6 +318,7 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
       >
         <Box
           sx={{
+            position: "relative",
             width: "100%",
             display: "flex",
             flexDirection: "column",
@@ -508,7 +497,7 @@ export default function ForgotPassword({ onSwitchToLogin, withAnimation }) {
                     onChange={(e) => {
                       setError("");
                       setPasswordError("");
-                      setRepeatPasswordError("");
+                      setConfirmPasswordError("");
                       setPassword(e.target.value);
                     }}
                     inputProps={{ spellCheck: "false" }}

@@ -18,16 +18,23 @@ export default function AppRoutes() {
     const token = localStorage.getItem("token");
 
     if (token) {
-      axios.get("/api/auth/check-username-is-created").then((res) => {
-        if (res.data?.username) {
-          setUsernameCreated(true);
-        }
-      }).catch((err) => {
-        console.error("Auth check failed", err);
-        setUsernameCreated(false);
-      }).finally(
-        setLoading(false)
-      )
+      axios
+        .get("/api/user/v1/check-username-is-created", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          if (res.data?.username) {
+            setUsernameCreated(true);
+          }
+        })
+        .catch((err) => {
+          console.error("Auth check failed", err);
+          setUsernameCreated(false);
+        }).finally(
+          setLoading(false)
+        )
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);

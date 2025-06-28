@@ -9,6 +9,8 @@ import {
   Button,
   Divider,
   Typography,
+  Stack,
+  LinearProgress,
   CircularProgress,
   FormHelperText,
 } from "@mui/material";
@@ -17,6 +19,7 @@ import DiscordIcon from "/src/assets/icons/DiscordIcon";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CustomTextField from "/src/components/TextFields/CustomTextField";
+import { useSnackbar } from "/src/contexts/SnackbarContext/SnackbarContext";
 
 export default function Login({
   onSwitch,
@@ -25,6 +28,7 @@ export default function Login({
   onForgotPassword,
 }) {
   document.title = "Login | ChatApp";
+  const { showSnackbar } = useSnackbar();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [identifierError, setIdentifierError] = useState("");
@@ -57,18 +61,28 @@ export default function Login({
     }
 
     try {
-      const response = await axios.post("/api/auth/login", {
+      const response = await axios.post("/api/auth/v1/login", {
         identifier,
         password,
       });
 
       if (response.data.success) {
-        await axios.post("/api/auth/send-otp", { email: identifier });
-        onOtpSent(identifier);
+        const otpResponse = await axios.post("/api/auth/v1/send-login-otp", {
+          email: identifier,
+        });
+
+        if (otpResponse.data.success) {
+          onOtpSent(identifier);
+          showSnackbar(otpResponse.data.message, "success");
+        } else {
+          setError(otpResponse.data.message || "Failed to send OTP");
+        }
+      } else {
+        setError(response.data.message || "Invalid credentials.");
       }
     } catch (err) {
-      setLoading(false);
-      setError("Invalid credentials. Please try again.");
+      console.error("Login/OTP error:", err);
+      setError("Something went wrong. Try again.");
     }
   };
 
@@ -96,6 +110,7 @@ export default function Login({
       >
         <Box
           sx={{
+            position: "relative",
             width: "100%",
             display: "flex",
             flexDirection: "column",
@@ -109,6 +124,19 @@ export default function Login({
             backgroundColor: "#FFFFFF",
           }}
         >
+          {loading && (
+            <Stack
+              sx={{
+                position: "absolute",
+                top: 0,
+                width: "100%",
+                color: "grey.500",
+              }}
+              spacing={2}
+            >
+              <LinearProgress color="inherit" />
+            </Stack>
+          )}
           <Typography
             variant="body2"
             gutterBottom
